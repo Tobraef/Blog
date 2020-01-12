@@ -1,0 +1,8 @@
+﻿@model List<Blog.Models.BlogEntry>
+@{
+    ViewBag.Title = "EmptyListOfEntries";
+}
+
+<h3>Entries</h3>
+<p>No entry with phrase <b>@ViewBag.toFindString</b> exists! All entries shown.</p>
+@Html.Partial("PartialEntryList")

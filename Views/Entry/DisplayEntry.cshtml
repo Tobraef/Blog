@@ -1,0 +1,50 @@
+﻿@model BlogEntry
+@{
+    ViewBag.Title = "DisplayEntry";
+}
+<style>
+    .table-entry {
+        height: 80%;
+        vertical-align: central;
+        color: black;
+        display: block;
+        float: left;
+        text-decoration: none;
+    }
+</style>
+<div class="well">
+    <p>@Model.Date.ToString() by @Model.Author.Name</p>
+    <h3>@Model.Topic</h3>
+    <p><img src="@Url.Action("ReadImage", "Entry", new { entryId = @Model.EntryId })" class="img-thumbnail" /></p>
+    <p>@Model.Text</p>
+
+    @using (Html.BeginForm("NewComment", "Entry", FormMethod.Get))
+    {
+        @Html.Hidden("entryId", Model.EntryId)
+        <input type="submit" role="button" class="btn-link" value="Add comment" />
+    }
+
+    <div class="form-inline">
+        <div class="text-left">
+            <a href="PreviousPage?currentTopic=@Model.Date">Previous page</a>
+        </div>
+        <div class="text-right">
+            <a href="NextPage?currentTopic=@Model.Date">Next page</a>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <table class="table">
+        @foreach (var comment in @Model.Comments)
+        {
+            <tr>
+                <td>
+                    <div class="table-entry">
+                        @comment.Date.ToString() by @comment.Author.Name<br />
+                    @comment.Text<br />
+                </div>
+            </td>
+        </tr>
+        }
+    </table>
+</div>

@@ -1,22 +1,29 @@
-﻿@model List<Entry>
-    @{
-        ViewBag.Title = "SuggestedEntries";
-    }
+﻿@model List<BlogEntry>
 
+<style>
+    .table-entry {
+        color: black;
+        display: block;
+        float: left;
+        text-decoration: none;
+    }
+</style>
     <p>Suggested entries:</p>
     <table>
         @foreach (var entry in Model)
         {
-            <tr>
-                <td>
-                    <a href="DisplaySingle?toFindString=@entry.Topic">
+            <tr style="height: 80%">
+            <td>
+                <div class="table-entry">
+                    <a href="~/EntriesList/DisplaySingle?toFindString=@entry.Topic">
                         <div class="table-entry">
                             @entry.Date.ToString() by @entry.Author.Name<br />
                             <b>@entry.Topic</b> <br />
                         </div>
                     </a>
-                </td>
-            </tr>
+                </div>
+            </td>
+        </tr>
         }
     </table>
 

@@ -47,49 +47,47 @@ namespace Blog.Controllers
             return RedirectToAction("DisplayEntry", "Entry", new { topic = toFindString });
         }
 
-        [HttpGet]
         public ActionResult CommentedEntries()
         {
             if (User.Identity.IsAuthenticated)
             {
                 using (var db = new BlogContext())
                 {
-                    var user = GetCurrentUser(db);
                     var latestCommentedEntries = db
                         .Entries
                         .Include(x => x.Comments.Select(c => c.Author))
                         .OrderBy(e => e.Comments.Where(c => c.Author.Name.Equals(User.Identity.Name)).Max(c => c.Date))
-                        .Take(3);
-                    return View(latestCommentedEntries);
+                        .Take(3)
+                        .ToList();
+                    return PartialView(latestCommentedEntries);
                 }
             }
             else
                 return new EmptyResult();
         }
 
-        [HttpGet]
         public ActionResult SuggestedEntries()
         {
             if (User.Identity.IsAuthenticated)
             {
                 using (var db = new BlogContext())
                 {
-                    var user = GetCurrentUser(db);
                     var mostPrefferedByUser = db
                         .TagsToUsers
                         .Where(a => a.Account.Name.Equals(User.Identity.Name))
-                        .OrderBy(ttu => ttu.TimesSeen)
+                        .OrderByDescending(ttu => ttu.TimesSeen)
                         .Take(3)
-                        .Select(ttu => ttu.Tag.TagId);
+                        .Select(ttu => ttu.Tag.TagId)
+                        .ToList();
                     var random = new Random((int)DateTime.Now.ToBinary());
-                    var randomEntriesContaining = db
+                    var entriesContaining = db
                         .Entries
-                        .Where(e => e.Tags.Count(t => mostPrefferedByUser.Contains(t.TagId)) > 0)
+                        .Where(e => e.Tags.Any(t => mostPrefferedByUser.Contains(t.TagId)))
                         .Include(e => e.Author)
                         .Include(e => e.Comments)
-                        .OrderBy(e => random.Next())
                         .ToList();
-                    return View(randomEntriesContaining);
+                    var randomEntriesContaining = entriesContaining.OrderBy(a => random.Next()).Take(3).ToList();
+                    return PartialView(randomEntriesContaining);
                 }
             }
             else

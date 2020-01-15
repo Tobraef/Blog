@@ -1,0 +1,23 @@
+﻿@model List<Entry>
+@{
+    ViewBag.Title = "CommentedEntries";
+}
+
+<p>You have commented on:</p>
+<table>
+    @foreach (var entry in Model)
+    {
+        <tr>
+            <td>
+                <a href="DisplaySingle?toFindString=@entry.Topic">
+                    <div class="table-entry">
+                        @entry.Date.ToString() by @entry.Author.Name<br />
+                        <b>@entry.Topic</b> <br />
+                    </div>
+                </a>
+            </td>
+        </tr>
+    }
+</table>
+
+

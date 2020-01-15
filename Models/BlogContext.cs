@@ -27,13 +27,24 @@ namespace Blog.Models
             set;
         }
 
-        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        public DbSet<EntryTag> Tags
         {
-            base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<BlogEntry>().HasOptional(x => x.Author)
-                .WithOptionalDependent().WillCascadeOnDelete(false);
-
+            get;
+            set;
         }
+
+        public DbSet<TagToUser> TagsToUsers
+        {
+            get;
+            set;
+        }
+
+        //protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        //{
+        //    base.OnModelCreating(modelBuilder);
+        //    modelBuilder.Entity<BlogEntry>().HasOptional(x => x.Account)
+        //        .WithOptionalDependent().WillCascadeOnDelete(false);
+        //}
 
         public BlogContext()
             : base("Context")

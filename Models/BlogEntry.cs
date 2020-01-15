@@ -44,6 +44,13 @@ namespace Blog.Models
             set;
         }
 
+        [Display(Name = "Seen times")]
+        public int Seen
+        {
+            get;
+            set;
+        }
+
         public virtual Account Author
         {
             get;
@@ -51,6 +58,12 @@ namespace Blog.Models
         }
 
         public virtual ICollection<Comment> Comments
+        {
+            get;
+            set;
+        }
+
+        public virtual ICollection<EntryTag> Tags
         {
             get;
             set;

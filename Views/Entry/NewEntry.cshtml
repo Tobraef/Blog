@@ -6,7 +6,7 @@
 <h3>NewEntry</h3>
 
 <div class="container">
-    @using (Html.BeginForm())
+    @using (Html.BeginForm(new { @enctype = "multipart/form-data" }))
     {
         @Html.ValidationSummary()
         <div class="form-group">

@@ -1,4 +1,4 @@
-﻿@model List<BlogEntry>
+﻿@model List<Blog.Models.BlogEntry>
 <style>
     .table-entry {
         color: black;
@@ -15,10 +15,10 @@
                 <td>
                     <a href="DisplaySingle?toFindString=@entry.Topic">
                         <div class="table-entry">
-                            @entry.Date.ToString() by @entry.Author.Name<br />
+                            @entry.Date.ToString() by @entry.Author.Name<br /> 
                             <b>@entry.Topic</b> <br />
                             @entry.Text.Substring(30)@entry.Text.Substring(30,
-                            entry.Text.IndexOf(' ', 30) - 30) ...
+   entry.Text.IndexOf(' ', 30) - 30) ...
                         </div>
                     </a>
                 </td>

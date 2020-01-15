@@ -61,9 +61,9 @@
     <div class="container body-content">
         <table style="width: 100%">
             <tr style="vertical-align: text-top" class="text-left">
-                <td style="width: 15%">Righthand column</td>
+                <td style="width: 15%">@Html.Partial("~/Views/EntriesList/SuggestedEntries.cshtml")</td>
                 <td style="width: 70%">@RenderBody()</td>
-                <td style="width: 15%">Lefthand column</td>
+                <td style="width: 15%">@RenderPage("~/Views/EntriesList/CommentedEntries.cshtml")</td>
             </tr>
         </table>
     </div>

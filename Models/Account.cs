@@ -59,6 +59,12 @@ namespace Blog.Models
             get;
             set;
         }
+
+        public virtual ICollection<TagToUser> TagsToUser
+        {
+            get;
+            set;
+        }
     }
 
     public static class UserTypes

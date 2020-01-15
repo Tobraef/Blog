@@ -31,7 +31,7 @@
             @Html.EditorFor(m => m.Email)
             @Html.ValidationMessageFor(m => m.Email)
         </div>
-        @Html.HiddenFor(m => m.Type, new { @value = "guest" })
+        @Html.HiddenFor(m => m.Type, new { @Value = "guest" })
         <input type="submit" class="btn-default" value="Create" />
     </div>
 }

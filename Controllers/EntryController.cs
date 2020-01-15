@@ -7,11 +7,17 @@ using Blog.Models;
 using System.Drawing;
 using System.IO;
 using System.Data.Entity;
+using System.Threading.Tasks;
 
 namespace Blog.Controllers
 {
     public class EntryController : Controller
     {
+        private Task<Account> GetCurrentUser(BlogContext db)
+        {
+            return db.Accounts.SingleAsync(a => a.Name.Equals(User.Identity.Name));
+        }
+
         public ActionResult ReadImage(int entryId)
         {
             using (var db = new BlogContext())
@@ -23,17 +29,52 @@ namespace Blog.Controllers
             }
         }
 
+        private void IncrementUsersTags(BlogEntry entry)
+        {
+            foreach (var tag in entry.Tags)
+            {
+                tag.TagToUsers
+                    .Where(ttu => ttu.Account.Name.Equals(User.Identity.Name))
+                    .ToList()
+                    .ForEach(ttu => ttu.TimesSeen++);
+            }
+        }
+
+        private void AddMissingTagToUsers(BlogContext db, BlogEntry entry)
+        {
+            var user = GetCurrentUser(db);
+            var missing = entry
+                .Tags
+                .Where(t => user.Result
+                    .TagsToUser.Count(ttu => ttu.Tag.Name.Equals(t.Name)) == 0)
+                .Select(tag => new TagToUser
+                {
+                    TimesSeen = 0,
+                    Account = user.Result,
+                    Tag = tag
+                }).ToList();
+            db.TagsToUsers.AddRange(missing);
+        }
+
         //
         // GET: /Entry/
+        [HttpGet]
         public ActionResult DisplayEntry(string topic)
         {
-            using (var db = new Blog.Models.BlogContext())
+            using (var db = new BlogContext())
             {
                 var entry = db.Entries
                     .Include(e => e.Author)
                     .Include(e => e.Comments.Select(c => c.Author))
-                    .Where(e => e.Topic.Equals(topic))
-                    .Single();
+                    .Include(e => e.Tags.Select(t => t.TagToUsers.Select(ttu => ttu.Account)))
+                    .First(e => e.Topic.Equals(topic));
+                entry.Seen++;
+                if (User.Identity.IsAuthenticated)
+                {
+                    AddMissingTagToUsers(db, entry);
+                    IncrementUsersTags(entry);
+                }
+                db.SaveChanges();
                 return View(entry);
             }
         }
@@ -84,10 +125,6 @@ namespace Blog.Controllers
                     byte[] data = new byte[fileStream.Length];
                     fileStream.Read(data, 0, (int)fileStream.Length);
                     entry.Image = data;
-                }
-                else
-                {
-                    throw new Exception("Shiet");
                 }
                 entry.Date = DateTime.Now;
                 entry.Author = db.Accounts.First(a => a.Name.Equals(User.Identity.Name));

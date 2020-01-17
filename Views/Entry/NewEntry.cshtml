@@ -9,26 +9,26 @@
     }
 </style>
 <script>
-
+    var id = 0;
     function RemoveTag(toRemove) {
-        alert(toRemove);
-        toRemove.remove();
+        document.getElementById('tag'+this.id.substr('remove'.length)).remove();
     }
-
     function AcceptTag(tagBox, tagList) {
         var tag = tagBox.value;
         var entry = document.createElement("li");
-        var removeMark = document.createElement("a");
-        removeMark.href = '#';
+        var removeMark = document.createElement("button");
+        removeMark.id = 'remove' + id;
+        removeMark.role = 'button';
+        removeMark.type = 'button';
         removeMark.innerHTML = 'X';
-        removeMark.classList.add("unstyled");
-        removeMark.addEventListener("click", RemoveTag(removeMark), false);
+        removeMark.addEventListener("click", RemoveTag, true);
+        entry.id = 'tag' + id;
         entry.appendChild(removeMark);
         entry.appendChild(document.createTextNode(' '));
         entry.appendChild(document.createTextNode(tag));
+        id++;
         tagList.appendChild(entry);
     }
-
     function CollectTags(tagList) {
         var text = "";
         var children = document.getElementById(tagList).childNodes;

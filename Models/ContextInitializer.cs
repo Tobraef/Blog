@@ -22,6 +22,16 @@ namespace Blog.Models
                 Email = "a@a.pl",
                 Type = UserTypes.admin
             }};
+            var img1Source = @"C:\Users\mprzemys\Desktop\Test pages\indx.png";
+            var img2Source = @"C:\Users\mprzemys\Desktop\Test pages\Clearear.jpg";
+            MemoryStream stream = new MemoryStream();
+            Image.FromFile(img1Source).Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+            byte[] buffer1 = new byte[stream.Length];
+            stream.Read(buffer1, 0, (int)stream.Length);
+            Image.FromFile(img2Source).Save(stream, System.Drawing.Imaging.ImageFormat.Jpeg);
+            byte[] buffer2 = new byte[stream.Length];
+            stream.Read(buffer2, 0, (int)stream.Length);
+            stream.Close();
             var entries = new List<BlogEntry> {
                 new BlogEntry
                 {
@@ -31,7 +41,7 @@ namespace Blog.Models
                     Author = accs.First(),
                     Date = DateTime.Now,
                     Seen = 0,
-                    Image = new byte[1]
+                    Image = buffer1
                 },
                 new BlogEntry
                 {
@@ -41,7 +51,7 @@ namespace Blog.Models
                     Author = accs.First(),
                     Date = DateTime.Now,
                     Seen = 10,
-                    Image = new byte[1]
+                    Image = buffer2
                 }
             };
             var comments = new List<Comment> { 

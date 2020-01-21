@@ -5,24 +5,22 @@
 
 <h3>New comment</h3>
 
-<div class="container">
-    @using (Html.BeginForm())
-    {
-        @Html.ValidationSummary()
-        @Html.Hidden("entryId", Model.Entry.EntryId)
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary()
+    @Html.Hidden("entryId", Model.Entry.EntryId)
         
-        <div class="form-group">
-            <div class="control-label">
-                @Html.LabelFor(c => c.Text)
-            </div>
-            <div class="input-group">
-                @Html.TextAreaFor(c => c.Text, new { @rows = 15, @cols = 300 })
-            </div>
-                @Html.ValidationMessageFor(c => c.Text)
+    <div class="form-group">
+        <div class="control-label">
+            @Html.LabelFor(c => c.Text)
         </div>
-        <input type="submit" class="btn-primary" role="button" value="Submit" />  
-    }
-</div>
+        <div class="input-group">
+            @Html.TextAreaFor(c => c.Text, new { @rows = 15, @cols = 200 })
+        </div>
+            @Html.ValidationMessageFor(c => c.Text)
+    </div>
+    <input type="submit" class="btn-primary" role="button" value="Submit" />  
+}
 <div class="well-sm">
     <small role="note">@Model.Entry.Text</small>
 </div>

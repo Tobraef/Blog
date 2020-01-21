@@ -62,7 +62,7 @@ namespace Blog.Controllers
         }
 
         [HttpPost]
-        public ActionResult Login(Account acc, string returnUrl)
+        public ActionResult Login(Account acc, string returnUrl /* form: /Controller/View */)
         {
             if (ModelState.IsValid)
             {
@@ -76,9 +76,7 @@ namespace Blog.Controllers
                         else
                         {
                             var parts = returnUrl.Split('/');
-                            if (parts.Count() != 2)
-                                throw new Exception(returnUrl);
-                            return RedirectToAction(parts.First(), parts.Last());
+                            return RedirectToAction(parts[2], parts[1]);
                         }
                     }
                 }

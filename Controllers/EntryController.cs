@@ -81,7 +81,7 @@ namespace Blog.Controllers
 
         public ActionResult PreviousPage(DateTime currentTopic)
         {
-            using (var db = new Blog.Models.BlogContext())
+            using (var db = new BlogContext())
             {
                 var pre = db.Entries.LastOrDefault(e => e.Date < currentTopic);
                 if (pre == null)
@@ -114,23 +114,46 @@ namespace Blog.Controllers
 
         [HttpPost]
         [Authorize(Roles = UserTypes.poster + "," + UserTypes.admin)]
-        public ActionResult NewEntry(BlogEntry entry, HttpPostedFileBase file)
+        public ActionResult NewEntry(BlogEntry entry, string collectedTags)
         {
             if (ModelState.IsValid)
-            using (var db = new BlogContext())
             {
-                if (file != null)
+                using (var db = new BlogContext())
                 {
-                    var fileStream = file.InputStream;
-                    byte[] data = new byte[fileStream.Length];
-                    fileStream.Read(data, 0, (int)fileStream.Length);
-                    entry.Image = data;
+                    if (Request.Files.Count > 0)
+                    {
+                        var file = Request.Files[0];
+                        if (file != null)
+                        {
+                            var fileStream = file.InputStream;
+                            byte[] data = new byte[fileStream.Length];
+                            fileStream.Read(data, 0, (int)fileStream.Length);
+                            entry.Image = data;
+                        }
+                    }
+                    if (!string.IsNullOrEmpty(collectedTags))
+                    {
+                        var tagArray = collectedTags.Split(' ').Distinct();
+                        foreach (var tag in tagArray)
+                        {
+                            if (!db.Tags.Any(t => t.Name.Equals(tag)))
+                            {
+                                var tagStruct = new EntryTag
+                                {
+                                    Name = tag
+                                };
+                                db.Tags.Add(tagStruct);
+                            }
+                        }
+                        db.SaveChanges(); // save tags, because entry won't get linked to tags if they are not in db
+                        entry.Tags = db.Tags.Where(t => tagArray.Contains(t.Name)).ToList();
+                    }
+                    entry.Date = DateTime.Now;
+                    entry.Author = db.Accounts.First(a => a.Name.Equals(User.Identity.Name));
+                    db.Entries.Add(entry);
+                    db.SaveChanges();
+                    return RedirectToAction("ListOfEntries", "EntriesList");
                 }
-                entry.Date = DateTime.Now;
-                entry.Author = db.Accounts.First(a => a.Name.Equals(User.Identity.Name));
-                db.Entries.Add(entry);
-                db.SaveChanges();
-                return RedirectToAction("ListOfEntries", "EntriesList");
             }
             else
             {

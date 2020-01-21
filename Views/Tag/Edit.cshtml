@@ -1,0 +1,19 @@
+﻿@model EntryTag
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h3>Edit tag</h3>
+<div class="well-sm">
+    @using (Html.BeginForm())
+    {
+        @Html.HiddenFor(m => m.TagId)
+        <div class="form-inline">
+            @Html.LabelFor(m => m.Name)
+            @Html.EditorFor(m => m.Name)
+        </div>
+        <div class="btn">
+            <input role="button" type="submit" value="Submit" />
+        </div>
+    }
+</div>

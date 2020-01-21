@@ -1,0 +1,66 @@
+﻿@model TagInfo
+@{
+    ViewBag.Title = "Index";
+}
+
+<h3>Info about all tags</h3>
+<div class="">
+    <div class="table">
+        <div class="text-center col-xs-6">
+            <table class="table table-bordered table-striped">
+                <thead class="text-center">
+                    <tr>
+                        <td>
+                            @Html.DisplayNameFor(m => m.TagToUses)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Tag</td>
+                        <td>Uses</td>
+                    </tr>
+                </thead>
+                <tbody class="text-center">
+                    @foreach (var tag in Model.TagToUses)
+                    {
+                        <tr>
+                            <td>@tag.Key.Name</td>
+                            <td>@tag.Value.ToString()</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="text-center col-xs-offset-6">
+            <table class="table table-bordered table-striped">
+                <thead class="text-center">
+                    <tr>
+                        <td>
+                            @Html.DisplayNameFor(m => m.TagToPopularity)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Tag</td>
+                        <td>Times seen</td>
+                    </tr>
+                </thead>
+                <tbody class="text-center">
+                    @foreach (var tag in Model.TagToPopularity)
+                    {
+                        <tr>
+                            <td>@tag.Key.Name</td>
+                            <td>@tag.Value.ToString()</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <p>Click tag to edit.</p>
+    <ul class="list-inline">
+        @foreach (var tag in Model.AllTags.Take(Model.AllTags.Count() - 1))
+        {
+            <li><a href="~/Tag/Edit/@tag.TagId">@tag.Name</a>,</li>
+        }
+        <li><a href="~/Tag/Edit/@Model.AllTags.Last().TagId">@Model.AllTags.Last().Name</a></li>
+    </ul>
+</div>

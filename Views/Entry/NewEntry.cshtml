@@ -2,76 +2,79 @@
 @{
     ViewBag.Title = "NewEntry";
 }
-<style>
-    .unstyled
-    {
-        text-decoration: none;
-    }
-</style>
 <script>
     var id = 0;
     function RemoveTag(toRemove) {
         document.getElementById('tag'+this.id.substr('remove'.length)).remove();
     }
+
+    function ExtractTagText(tagList, index) {
+        	var text = tagList.childNodes[index].innerHTML;
+            return text.substr(text.lastIndexOf('</text>') + '</text>'.length);
+    }
+
     function AcceptTag(tagBox, tagList) {
         var tag = tagBox.value;
+        if (tag == "") {
+            return;
+        }
+        tagBox.value = "";
         var entry = document.createElement("li");
-        var removeMark = document.createElement("button");
+        var removeMark = document.createElement("span");
         removeMark.id = 'remove' + id;
-        removeMark.role = 'button';
-        removeMark.type = 'button';
-        removeMark.innerHTML = 'X';
+        removeMark.classList.add('glyphicon');
+        removeMark.classList.add('glyphicon-remove');
         removeMark.addEventListener("click", RemoveTag, true);
         entry.id = 'tag' + id;
         entry.appendChild(removeMark);
-        entry.appendChild(document.createTextNode(' '));
+        var text = document.createElement("text");
+        text.innerHTML = '&nbsp;&nbsp;&nbsp;';
+        entry.appendChild(text);
         entry.appendChild(document.createTextNode(tag));
         id++;
         tagList.appendChild(entry);
     }
+
     function CollectTags(tagList) {
         var text = "";
-        var children = document.getElementById(tagList).childNodes;
-        for (var i = 0; i < children.length; ++i) {
-            text += children[i].childNodes[2].innerHTML + ' ';
+        for (var i = 1; i < tagList.childNodes.length; ++i) {
+            text += ExtractTagText(tagList, i) + ' ';
         }
         return text.trim();
     }
 </script>
 <h3>NewEntry</h3>
 
-<div class="container">
-    @using (Html.BeginForm(new { @enctype = "multipart/form-data" }))
-    {
-        @Html.ValidationSummary()
-        <div class="form-group">
-            <div class="control-label">
-                @Html.LabelFor(m => m.Topic)
-            </div>
-                @Html.EditorFor(m => m.Topic, new { @class = "form-control" })
-                @Html.ValidationMessageFor(m => m.Topic)
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary()
+    <div class="form-group">
+        <div class="control-label">
+            @Html.LabelFor(m => m.Topic)
         </div>
-        <div class="form-group">
-            <div class="control-label">
-                @Html.LabelFor(m => m.Text)
-            </div>
-                @Html.TextAreaFor(m => m.Text, new { @class = "form-control", @rows = 20, @cols = 100 })
-                @Html.ValidationMessageFor(m => m.Text)
+            @Html.EditorFor(m => m.Topic, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Topic)
+    </div>
+    <div class="form-group">
+        <div class="control-label">
+            @Html.LabelFor(m => m.Text)
         </div>
-        <div class="form-group">
-            <div class="control-label">
-                <label>Image</label>
-            </div>
-            <input type="file" name="file" id="file" />
+            @Html.TextAreaFor(m => m.Text, new { @class = "form-control", @rows = 20, @cols = 200 })
+            @Html.ValidationMessageFor(m => m.Text)
+    </div>
+    <div class="form-group">
+        <div class="control-label">
+            <label>Image</label>
         </div>
-        <div class="form-horizontal">
-                <input name="tag" id="tagId" />
-            <div class="btn">
-                <input type="button" role="button" value="Accept tag" onclick="AcceptTag(tagId, tagContainer)" />
-            </div>
-            <ul id="tagContainer" class="list-unstyled"><!-- Place for tags --></ul>
+        <input type="file" name="file" id="file" />
+    </div>
+    <div class="form-horizontal">
+            <input name="tag" id="tagId" />
+        <div class="btn">
+            <input type="button" role="button" value="Accept tag" onclick="AcceptTag(tagId, tagContainer)" />
         </div>
-        <input type="hidden" id="tags" hidden />
-        <input type="submit" role="button" class="btn-primary" value="Submit" onclick="tags.value=CollectTags(tags)"/>
-    }
-</div>
+        <ul id="tagContainer" style="list-style: none"><!-- Place for tags --></ul>
+    </div>
+    <input type="hidden" id="collectedTags" value="" hidden name="collectedTags" />
+    <input type="submit" role="button" class="btn-primary" value="Submit" onclick="collectedTags.value=CollectTags(tagContainer)"/>
+}

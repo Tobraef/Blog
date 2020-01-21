@@ -1,11 +1,67 @@
-﻿
+﻿@model IEnumerable<EntryPreview>  
 @{
     ViewBag.Title = "StartView";
 }
+<style>
+    .center-text 
+    {
+        text-align: center;
+        vertical-align: central;
+    }
+</style>
 
-<h2>StartView</h2>
-<p>Hello @User.Identity.Name.</p>
-<p>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</p>
-<p>bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb</p>
-<p>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</p>
+
+<h3>StartView</h3>
+<p>Hello @User.Identity.Name</p>
+<div style="text-align: center; position: relative; color: white; width: 100%;">
+    <img src="/StartPage/GetEntryImage/@Model.First().EntryId" id="img-carousel" alt=""/>
+    <text class="center-text" id="text-carousel">@Model.First().Title</text>
+</div>
+<input type="button" role="button" onclick="Load()" value="go" />
 <a href="UploadImage">Upload image</a>
+
+<script>
+    var index = 0;
+    var ids = [];
+    var topics = [];
+    @foreach (var e in Model)
+    {
+        <text>
+            ids.push('@e.EntryId');
+            topics.push('@e.Title');
+        </text>
+    }
+
+    function Shift() {
+        if (index == ids.length - 1) {
+            index = 0;
+        } else {
+            index++;
+        }
+    }
+
+    function LoadNextImg(imageNode) {
+        var imgSrc = imageNode.src;
+        imgSrc = imgSrc.substr(0, imgSrc.lastIndexOf('/') + 1) + ids[index];
+        imageNode.src = imgSrc;
+    }
+
+    function LoadNextText(textNode) {
+        textNode.innerHTML = topics[index];
+    }
+
+    function Load() {
+        var imgHold = document.getElementById('img-carousel');
+        var textHold = document.getElementById('text-carousel');
+        Shift();
+        LoadNextImg(imgHold);
+        LoadNextText(textHold);
+    }
+
+    function Timer() {
+        Load();
+        setTimeout(Timer, 5000);
+    }
+
+    Timer();
+</script>

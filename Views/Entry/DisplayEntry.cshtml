@@ -2,6 +2,7 @@
 @{
     ViewBag.Title = "DisplayEntry";
 }
+
 <style>
     .table-entry {
         height: 80%;
@@ -31,24 +32,22 @@
         <div class="text-right">
             <a href="NextPage?currentTopic=@Model.Date">Next page</a>
         </div>
-        <br/>
+        <br />
         <div class="text-right">
             Seen: @Model.Seen
         </div>
     </div>
 </div>
-<div class="container">
-    <table class="table">
-        @foreach (var comment in @Model.Comments)
-        {
-            <tr>
-                <td>
-                    <div class="table-entry">
-                        @comment.Date.ToString() by @comment.Author.Name<br />
+<table class="table">
+    @foreach (var comment in @Model.Comments)
+    {
+        <tr>
+            <td>
+                <div class="table-entry">
+                    @comment.Date.ToString() by @comment.Author.Name<br />
                     @comment.Text<br />
                 </div>
             </td>
         </tr>
-        }
-    </table>
-</div>
+    }
+</table>

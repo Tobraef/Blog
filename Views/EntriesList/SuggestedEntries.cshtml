@@ -8,11 +8,11 @@
         text-decoration: none;
     }
 </style>
-    <p>Suggested entries:</p>
-    <table class="table">
-        @foreach (var entry in Model)
+    <p>@if (Model.Count != 0){<text>Suggested entries:</text>}</p>
+<table class="table">
+    @foreach (var entry in Model)
         {
-            <tr style="height: 80%">
+        <tr style="height: 80%">
             <td>
                 <div class="table-entry">
                     <a href="~/EntriesList/DisplaySingle?toFindString=@entry.Topic">
@@ -25,6 +25,5 @@
             </td>
         </tr>
         }
-    </table>
-
+</table>
 

@@ -1,10 +1,9 @@
-﻿@model IEnumerable<EntryPreview>  
+﻿@model IEnumerable<EntryPreview>
 @{
     ViewBag.Title = "StartView";
 }
 <style>
-    .center-text 
-    {
+    .center-text {
         text-align: center;
         vertical-align: central;
     }
@@ -13,53 +12,84 @@
 
 <h3>StartView</h3>
 <p>Hello @User.Identity.Name</p>
-<div style="text-align: center; position: relative; color: white; width: 100%;">
-    <img src="/StartPage/GetEntryImage/@Model.First().EntryId" id="img-carousel" alt=""/>
-    <text class="center-text" id="text-carousel">@Model.First().Title</text>
+<div style="text-align: center; position: relative; top: 0; left: 0;">
+    <a href="DisplayEntry/@Model.First().EntryId" id="redirect-carousel">
+        <img src="GetEntryImage/@Model.First().EntryId" id="img-carousel-1" height="500" width="500" style="opacity: 1; position: absolute; top: 0; left: 0;" />
+        <text class="center-text" id="text-carousel-1" style="opacity: 1; top: 200px; left: 150px; position: absolute; width: 200px; text-decoration: none; font-size: large; ">@Model.First().Title</text>
+        <img src="GetEntryImage/@Model.Last().EntryId" id="img-carousel-2" height="500" width="500" style="opacity: 0; position: absolute; top: 0; left: 0;" />
+        <text class="center-text" id="text-carousel-2" style="opacity: 0; top: 200px; left: 150px; position: absolute; width: 200px; text-decoration: none; font-size: large;">@Model.Last().Title</text>
+    </a>
 </div>
+
 <input type="button" role="button" onclick="Load()" value="go" />
 <a href="UploadImage">Upload image</a>
 
 <script>
-    var index = 0;
+    var idToFade = 1;
+    var idToShow = 2;
+    var index = 2;
     var ids = [];
     var topics = [];
     @foreach (var e in Model)
     {
         <text>
-            ids.push('@e.EntryId');
-            topics.push('@e.Title');
-        </text>
+    ids.push('@e.EntryId');
+    topics.push('@e.Title');
+    </text>
     }
 
     function Shift() {
-        if (index == ids.length - 1) {
+        index++;
+        if (index == ids.length) {
             index = 0;
-        } else {
-            index++;
         }
     }
 
-    function LoadNextImg(imageNode) {
+    function LoadNextImg(imageNode, index) {
         var imgSrc = imageNode.src;
         imgSrc = imgSrc.substr(0, imgSrc.lastIndexOf('/') + 1) + ids[index];
         imageNode.src = imgSrc;
     }
 
-    function LoadNextText(textNode) {
+    function LoadNextText(textNode, index) {
         textNode.innerHTML = topics[index];
     }
 
     function Load() {
-        var imgHold = document.getElementById('img-carousel');
-        var textHold = document.getElementById('text-carousel');
+        var tmp = idToFade;
+        idToFade = idToShow;
+        idToShow = tmp;
         Shift();
-        LoadNextImg(imgHold);
-        LoadNextText(textHold);
+        var nodeToChange = document.getElementById('text-carousel-' + idToShow);
+        var nodeWithImage = document.getElementById('img-carousel-' + idToShow);
+        var nodeWithRedirect = document.getElementById('redirect-carousel');
+        nodeWithRedirect.href = 'DisplayEntry/' + ids[index];
+        LoadNextText(nodeToChange, index);
+        LoadNextImg(nodeWithImage, index);
+    }
+
+    function Fade() {
+        var toFade = document.getElementById('text-carousel-' + idToFade);
+        var toAppear = document.getElementById('text-carousel-' + idToShow);
+        var toFadeImg = document.getElementById('img-carousel-' + idToFade);
+        var toAppearImg = document.getElementById('img-carousel-' + idToShow);
+        toFade.style.opacity -= 0.11;
+        toAppear.style.opacity = 1 - toFade.style.opacity;
+        toFadeImg.style.opacity -= 0.11;
+        toAppearImg.style.opacity = 1 - toFadeImg.style.opacity;
+        if (toAppear.style.opacity > 0.95) {
+            toAppear.style.opacity = 1.0;
+            toFade.style.opacity = 0.0;
+            toAppearImg.style.opacity = 1.0;
+            toFadeImg.style.opacity = 0.0;
+            return;
+        }
+        setTimeout(Fade, 200);
     }
 
     function Timer() {
         Load();
+        Fade();
         setTimeout(Timer, 5000);
     }
 

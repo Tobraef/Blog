@@ -39,6 +39,12 @@ namespace Blog.Models
             set;
         }
 
+        public DbSet<ParagraphNode> Paragraphs
+        {
+            get;
+            set;
+        }
+
         //protected override void OnModelCreating(DbModelBuilder modelBuilder)
         //{
         //    base.OnModelCreating(modelBuilder);

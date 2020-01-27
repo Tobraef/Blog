@@ -63,7 +63,9 @@ namespace Blog.Controllers
                 }
             }
             else
-                return new EmptyResult();
+            {
+                return PartialView(new List<BlogEntry>());
+            }
         }
 
         public ActionResult SuggestedEntries()
@@ -92,7 +94,7 @@ namespace Blog.Controllers
             }
             else
             {
-                return new EmptyResult();
+                return PartialView(new List<BlogEntry>());
             }
         }
 	}

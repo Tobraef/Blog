@@ -1,0 +1,7 @@
+﻿@model IEnumerable<EntryText>
+
+@foreach(var et in Model)
+{
+    <h@et.Nest>@et.Heading</h@et.Nest>
+    <p>@et.Text</p>
+}

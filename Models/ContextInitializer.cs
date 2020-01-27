@@ -22,22 +22,22 @@ namespace Blog.Models
                 Email = "a@a.pl",
                 Type = UserTypes.admin
             }};
-            var img1Source = @"C:\Users\mprzemys\Desktop\Test pages\indx.png";
-            var img2Source = @"C:\Users\mprzemys\Desktop\Test pages\Clearear.jpg";
-            MemoryStream stream = new MemoryStream();
-            Image.FromFile(img1Source).Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+            var img1Source = @"C:\Users\Public\Pictures\Sample Pictures\Scan.png";
+            var img2Source = @"C:\Users\Public\Pictures\Sample Pictures\Penguins.jpg";
+            //var img1Source = @"C:\Users\mprzemys\Desktop\Test pages\indx.png";
+            //var img2Source = @"C:\Users\mprzemys\Desktop\Test pages\Clearear.jpg";
+            var stream = new FileStream(img1Source, FileMode.Open);
             byte[] buffer1 = new byte[stream.Length];
             stream.Read(buffer1, 0, (int)stream.Length);
-            Image.FromFile(img2Source).Save(stream, System.Drawing.Imaging.ImageFormat.Jpeg);
+            stream = new FileStream(img2Source, FileMode.Open);
             byte[] buffer2 = new byte[stream.Length];
             stream.Read(buffer2, 0, (int)stream.Length);
-            stream.Close();
+            stream.Dispose();
             var entries = new List<BlogEntry> {
                 new BlogEntry
                 {
                     EntryId = 1,
                     Topic = "Cool topic",
-                    Text = "Casual long text Casual long text Casual long text Casual long text Casual long text",
                     Author = accs.First(),
                     Date = DateTime.Now,
                     Seen = 0,
@@ -47,11 +47,19 @@ namespace Blog.Models
                 {
                     EntryId = 2,
                     Topic = "Super topic",
-                    Text = "Short textShort textShort textShort textShort textShort textShort text",
                     Author = accs.First(),
                     Date = DateTime.Now,
                     Seen = 10,
                     Image = buffer2
+                },
+                new BlogEntry
+                {
+                    EntryId = 3,
+                    Topic = "Extra topic",
+                    Author = accs.First(),
+                    Date = DateTime.Now,
+                    Seen = 5,
+                    Image = buffer1
                 }
             };
             var comments = new List<Comment> { 
@@ -79,11 +87,42 @@ namespace Blog.Models
                 Entries = new HashSet<BlogEntry> { entries.First() }
             }
             };
+            var paragraphs = new List<ParagraphNode> {
+            new ParagraphNode
+            {
+                Entry = entries.First(),
+                Index = "1.",
+                Heading = "Healthy life",
+                Text = "Be healthy mate"
+            },
+            new ParagraphNode
+            {
+                Entry = entries.Last(),
+                Index = "1.",
+                Heading = "Good life",
+                Text = "Stay healthy mate"
+            },
+            new ParagraphNode
+            {
+                Entry = entries.ElementAt(1),
+                Index = "1.",
+                Heading = "Best life",
+                Text = "Being healthy mate"
+            },
+            new ParagraphNode
+            {
+                Entry = entries.First(),
+                Index = "1.1",
+                Heading = "Life is life",
+                Text = "nananana"
+            }
+            };
 
             context.Accounts.AddRange(accs);
             context.Entries.AddRange(entries);
             context.Comments.AddRange(comments);
             context.Tags.AddRange(tags);
+            context.Paragraphs.AddRange(paragraphs);
             context.SaveChanges();
         }
     }

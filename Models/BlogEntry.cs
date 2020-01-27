@@ -31,13 +31,6 @@ namespace Blog.Models
             set;
         }
 
-        [MinLength(5)]
-        public string Text
-        {
-            get;
-            set;
-        }
-
         public byte[] Image
         {
             get;
@@ -64,6 +57,12 @@ namespace Blog.Models
         }
 
         public virtual ICollection<EntryTag> Tags
+        {
+            get;
+            set;
+        }
+
+        public virtual ICollection<ParagraphNode> Paragraphs
         {
             get;
             set;

@@ -11,14 +11,18 @@ namespace Blog.Controllers
 {
     public class StartPageController : Controller
     {
-        [Route("GetEntryImage/{id}")]
         public ActionResult GetEntryImage(int id)
         {
             using (var db = new BlogContext())
             {
-                if (db.Entries.Find(id).Image == null) throw new Exception("x");
-                return File(db.Entries.Find(id).Image, "image/png");
+                return File(db.Entries.Find(id).Image, "image.png");
             }
+        }
+
+        public ActionResult DisplayEntry(int id)
+        {
+            using (var db = new BlogContext())
+            return RedirectToAction("DisplayEntry", "Entry", new { topic = db.Entries.Find(id).Topic });
         }
 
         private IEnumerable<int> GetRandomIndexes(int count, int max)
@@ -72,7 +76,7 @@ namespace Blog.Controllers
         {
             using (var db = new BlogContext())
             {
-                return View(GetRandomPreviews(db, 3).ToList());
+                return View(GetRandomPreviews(db, 4).ToList());
             }
         }
 

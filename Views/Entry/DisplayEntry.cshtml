@@ -16,8 +16,8 @@
 <div class="well">
     <p>@Model.Date.ToString() by @Model.Author.Name</p>
     <h3>@Model.Topic</h3>
-    <p><img src="@Url.Action("ReadImage", "Entry", new { entryId = @Model.EntryId })" class="img-thumbnail" /></p>
-    <p>@Model.Text</p>
+    <p class="text-center"><img src="@Url.Action("ReadImage", "Entry", new { entryId = @Model.EntryId })" width="500" height="500" /></p>
+    @Html.Partial("GetEntryText", new { entryId = Model.EntryId })
 
     @using (Html.BeginForm("NewComment", "Entry", FormMethod.Get))
     {

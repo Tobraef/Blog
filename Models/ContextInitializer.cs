@@ -11,6 +11,14 @@ namespace Blog.Models
 {
     public class ContextInitializer : DropCreateDatabaseAlways<BlogContext>
     {
+        private byte[] LoadImage(string source)
+        {
+            var stream = new FileStream(source, FileMode.Open);
+            byte[] buffer = new byte[stream.Length];
+            stream.Read(buffer, 0, (int)stream.Length);
+            return buffer;
+        }
+
         protected override void Seed(BlogContext context)
         {
             base.Seed(context);
@@ -22,17 +30,12 @@ namespace Blog.Models
                 Email = "a@a.pl",
                 Type = UserTypes.admin
             }};
-            var img1Source = @"C:\Users\Public\Pictures\Sample Pictures\Scan.png";
-            var img2Source = @"C:\Users\Public\Pictures\Sample Pictures\Penguins.jpg";
-            //var img1Source = @"C:\Users\mprzemys\Desktop\Test pages\indx.png";
-            //var img2Source = @"C:\Users\mprzemys\Desktop\Test pages\Clearear.jpg";
-            var stream = new FileStream(img1Source, FileMode.Open);
-            byte[] buffer1 = new byte[stream.Length];
-            stream.Read(buffer1, 0, (int)stream.Length);
-            stream = new FileStream(img2Source, FileMode.Open);
-            byte[] buffer2 = new byte[stream.Length];
-            stream.Read(buffer2, 0, (int)stream.Length);
-            stream.Dispose();
+            //var img1Source = @"C:\Users\Public\Pictures\Sample Pictures\Scan.png";
+            //var img2Source = @"C:\Users\Public\Pictures\Sample Pictures\Penguins.jpg";
+            var img1Source = @"C:\Users\mprzemys\Desktop\Test pages\indx.png";
+            var img2Source = @"C:\Users\mprzemys\Desktop\Test pages\Clearear.jpg";
+            var buffer1 = LoadImage(img1Source);
+            var buffer2 = LoadImage(img2Source);
             var entries = new List<BlogEntry> {
                 new BlogEntry
                 {
@@ -112,7 +115,7 @@ namespace Blog.Models
             new ParagraphNode
             {
                 Entry = entries.First(),
-                Index = "1.1",
+                Index = "1.1.",
                 Heading = "Life is life",
                 Text = "nananana"
             }

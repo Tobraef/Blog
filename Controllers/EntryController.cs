@@ -216,7 +216,7 @@ namespace Blog.Controllers
 
         [HttpPost]
         [Authorize(Roles = UserTypes.poster + "," + UserTypes.admin)]
-        public ActionResult NewEntry(BlogEntry entry, string collectedTags)
+        public ActionResult NewEntry(NewEntry entry, string collectedTags)
         {
             string text = ViewData["EntryText"] as string;
             if (ModelState.IsValid)

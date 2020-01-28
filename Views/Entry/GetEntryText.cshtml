@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<EntryText>
 
-@foreach(var et in Model)
-{
-    <h@et.Nest>@et.Heading</h@et.Nest>
-    <p>@et.Text</p>
-}
+    @foreach (var et in Model)
+    {
+        @Html.Raw("<h" + (2 + et.Nest).ToString() + ">" + et.Heading + "</h" + (2 + et).Nest.ToString() + ">");
+        <p>@et.Text</p>
+    }

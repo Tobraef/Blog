@@ -23,7 +23,7 @@ namespace Blog.Models
         {
             get
             {
-                return Text.Take(Text.IndexOf(' ')).Count(c => c == '.');
+                return Heading.Take(Heading.IndexOf(' ')).Count(c => c == '.');
             }
         }
     }

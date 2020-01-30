@@ -56,6 +56,7 @@ namespace Blog.Controllers
                     var latestCommentedEntries = db
                         .Entries
                         .Include(x => x.Comments.Select(c => c.Author))
+                        .Where(e => e.Comments.Count(c => c.Author.Name.Equals(User.Identity.Name)) != 0)
                         .OrderBy(e => e.Comments.Where(c => c.Author.Name.Equals(User.Identity.Name)).Max(c => c.Date))
                         .Take(3)
                         .ToList();

@@ -51,7 +51,7 @@ namespace Blog.Models
 
         bool isValidChild(List<int> parent, List<int> child)
         {
-            return parent.Count == child.Count - 1 && parent.SequenceEqual(child);
+            return parent.Count == child.Count - 1 && toLesserEqual(parent, child);
         }
 
         bool toLesserEqual<T>(IEnumerable<T> first, IEnumerable<T> last)
@@ -129,7 +129,11 @@ namespace Blog.Models
         public override bool IsValid(object value)
         {
             var text = Regex.Matches((string)value, "([0-9]\\.)+( |[0-9])");
-            var paras = text.OfType<string>();
+            var paras = new List<string>();
+            foreach (var t in text)
+            {
+                paras.Add(((Match)t).Value.TrimEnd(' '));
+            }
             return paras.All(s => HasLastDot(s)) && Matches(paras);
         }
     }

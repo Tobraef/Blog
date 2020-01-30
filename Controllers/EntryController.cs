@@ -191,8 +191,7 @@ namespace Blog.Controllers
         private void HandleParagraphs(BlogContext db, BlogEntry entry, string text)
         {
             var paras = text.Split('\n');
-            var iter = paras.GetEnumerator() as IEnumerator<string>;
-            
+            var iter = paras.Cast<string>().GetEnumerator();            
             while (iter.MoveNext())
             {
                 var sectionSplit = iter.Current.IndexOf(' ');
@@ -216,19 +215,21 @@ namespace Blog.Controllers
 
         [HttpPost]
         [Authorize(Roles = UserTypes.poster + "," + UserTypes.admin)]
-        public ActionResult NewEntry(NewEntry entry, string collectedTags)
+        public ActionResult NewEntry(NewEntry entry)
         {
-            string text = ViewData["EntryText"] as string;
             if (ModelState.IsValid)
             {
+                var dbEntry = new BlogEntry();
                 using (var db = new BlogContext())
                 {
-                    HandleParagraphs(db, entry, text);
-                    HandleUploadedImage(entry);
-                    HandleTags(db, entry, collectedTags);
-                    entry.Date = DateTime.Now;
-                    entry.Author = db.Accounts.First(a => a.Name.Equals(User.Identity.Name));
-                    db.Entries.Add(entry);
+                    dbEntry.Topic = entry.Topic;
+                    dbEntry.Date = DateTime.Now;
+                    dbEntry.Author = db.Accounts.First(a => a.Name.Equals(User.Identity.Name));
+                    db.Entries.Add(dbEntry);
+                    db.SaveChanges();
+                    HandleParagraphs(db, dbEntry, entry.Text);
+                    HandleUploadedImage(dbEntry);
+                    HandleTags(db, dbEntry, entry.Tags);
                     db.SaveChanges();
                     return RedirectToAction("ListOfEntries", "EntriesList");
                 }
